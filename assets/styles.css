@@ -1,0 +1,239 @@
+  @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
+
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+
+  :root {
+      --azul-escuro: rgb(18, 92, 203);
+      --azul-claro: rgb(94, 163, 232);
+      --backround-color: rgb(234, 234, 239);
+      --verde-button: rgb(61, 200, 80);
+
+      font-family: "Open Sans", sans-serif;
+  }
+
+  html,
+  body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--backround-color);
+  }
+
+  .container {
+      width: 80vw;
+      max-width: 1200px;
+      height: 75vh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 2fr;
+      box-shadow: 2px 2px 12px 1px rgba(0, 0, 0, 0.3);
+  }
+
+  .grid1 {
+      background-image: linear-gradient(45deg, var(--azul-escuro)10%, var(--azul-claro)90%);
+      width: 100%;
+      height: 100%;
+  }
+
+
+  .frmLogin {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      gap: 40px;
+  }
+
+  h1 {
+      font-weight: 800;
+      color: white;
+      font-size: 2.5rem;
+      letter-spacing: 0.2rem;
+  }
+
+  input[type="email"],
+  input[type="password"] {
+      border: none;
+      width: 60%;
+      height: 35px;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 1rem;
+      color: rgb(158, 156, 156);
+  }
+
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+      outline: 0;
+  }
+
+  input[type="email"] {
+      margin-bottom: -15px;
+  }
+
+  .chkInfo {
+      display: flex;
+      font-size: 0.8rem;
+      width: 55%;
+      margin-top: -30px;
+      justify-content: space-between;
+      color: white;
+  }
+
+  input[type="checkbox"] {
+      vertical-align: middle;
+      margin-right: 2px;
+      width: 20px;
+      margin-bottom: 3px;
+  }
+
+  label {
+      cursor: pointer;
+  }
+
+  a {
+      text-decoration: none;
+      color: white;
+  }
+
+  input[type="submit"] {
+      border: none;
+      width: 60%;
+      height: 35px;
+      border-radius: 12px;
+      background-color: var(--verde-button);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.2rem;
+  }
+
+  input[type="submit"]:hover {
+      border: none;
+      width: 60%;
+      height: 35px;
+      border-radius: 12px;
+      background-color: rgb(116, 228, 131);
+  }
+
+  .infoSenha {
+      color: rgb(240, 134, 134);
+      text-align: center;
+      font-weight: 500;
+      padding: 0px 120px;
+      margin-top: -30px;
+      font-size: 14px;
+
+  }
+
+  .grid2 {
+      background-color: white;
+  }
+
+  .grid2 img {
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+  }
+
+  .modal {
+      background-color: rgba(0, 0, 0, 0.3);
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      z-index: 1;
+      display: none; 
+      align-items: center;
+      justify-content: center;
+  }
+
+  .conteudoModal {
+      border: 2px solid rgb(194, 135, 135);
+      height: 10vh;
+      width: 32vw;
+      background-color: rgba(216, 127, 127, 0.9);
+      display: grid;
+      grid-template-columns: 1fr 8fr 1fr;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+  }
+
+  .btnCloseModal {
+      font-weight: 700;
+      font-size: 38px;
+      color: rgb(150, 42, 42);
+      grid-row-start: 1;
+      justify-self: center;
+      position: relative;
+      bottom: 13px;
+      left: 5px;
+      cursor: pointer;
+  }
+
+  .btnCloseModal:hover {
+      color: rgb(241, 156, 156);
+      ;
+  }
+
+  .conteudoModal p {
+      grid-row-start: 1;
+      justify-self: center;
+      font-weight: 700;
+      color: var(--backround-color)
+  }
+
+  .error {
+      grid-row-start: 1;
+      font-weight: 900;
+      font-size: 42px;
+      color: rgb(150, 42, 42);
+      position: relative;
+      justify-self: flex-end;
+  }
+
+  @media screen and (max-width:800px) {
+
+  .container{
+    height: 80vh;
+    width: 90vw;
+  }
+  .grid1{
+    grid-row-start: 2;
+    width: 90vw;
+    height: 50vh;
+    min-height: 300px;
+
+  }
+  .grid2{
+    width: 90vw;
+    height: 30vh;
+    min-height: 150px;
+  }
+  
+  .conteudoModal{
+    width: 80vw;
+    text-align: center;
+  }
+
+  .chkInfo{
+    display: grid;
+    justify-items: center;
+    justify-content: center;
+    grid-auto-rows: 22px;
+  }
+
+  .send{
+    margin-top: -32px;
+  }
+  }
+
+ 
