@@ -78,9 +78,9 @@ async function bloquearCliente(cnpj, bodyRequest) {
     method: 'PATCH',
     mode: 'cors',
     headers: {
-       'Content-Type': 'application/json',
-       'Authorization': `Bearer ${token}` 
-       },
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
     body: JSON.stringify(bodyRequest)
   })
     .then(async response => {
@@ -99,7 +99,7 @@ async function deleteCliente(cnpj) {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Baerer ${token}` 
+      'Authorization': `Baerer ${token}`
     },
     mode: 'cors'
   })
@@ -182,9 +182,9 @@ document.querySelector('#formCadastro').addEventListener('submit', async (event)
       method: 'POST',
       mode: 'cors',
       headers: {
-         'Content-Type': 'application/json',
-         'Authorization': `Bearer ${token}`
-        },
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify(bodyRequest)
     })
     if (!resposta.ok) {
@@ -198,7 +198,7 @@ document.querySelector('#formCadastro').addEventListener('submit', async (event)
     }
 
   } catch (erro) {
-   alert(erro)
+    alert(erro)
   }
 })
 
@@ -242,3 +242,8 @@ const config = {
 observer.observe(tabelaClientes, config);
 
 
+  const btnClosePage = document.querySelector('#btnClosePage');
+  btnClosePage.addEventListener('click', (event) => {
+    localStorage.clear();
+    window.location.href = "index.html"
+})

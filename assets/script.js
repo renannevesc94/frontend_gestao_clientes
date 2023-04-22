@@ -19,7 +19,6 @@ class Usuario {
 async function getUsuario() {
     let usuario = document.querySelector('#inptEmail').value;
     let senha = document.querySelector('#inptPassword').value;
-    alert(senha)
 
 try{
    const resposta = await fetch(rotaApi+'/login', {
