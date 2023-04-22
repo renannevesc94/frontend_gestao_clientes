@@ -1,4 +1,4 @@
-
+const rotaApi = 'https://api-gestao-clientes.onrender.com'
 //CLASSE PARA CRIAÇAO DE USUÁRIO COM MÉTODO PARA VALIDAR SENHA
 class Usuario {
     constructor(usuario, senha) {
@@ -19,13 +19,14 @@ class Usuario {
 async function getUsuario() {
     let usuario = document.querySelector('#inptEmail').value;
     let senha = document.querySelector('#inptPassword').value;
+    alert(senha)
 
 try{
-   const resposta = await fetch('http://127.0.0.1:3000/login', {
+   const resposta = await fetch(rotaApi+'/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     mode: 'cors',
-                    body: JSON.stringify({ _usuario: usuario, _senha: senha })
+                    body: JSON.stringify({ userName: usuario, senhaUser: senha })
                     })
 
     if(!resposta.ok){

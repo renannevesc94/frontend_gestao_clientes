@@ -1,8 +1,7 @@
-const rotaApi = 'http://127.0.0.1:3000'
+const rotaApi = 'https://api-gestao-clientes.onrender.com'
 
 async function getClientes() {
   const token = localStorage.getItem('token');
-  console.log(token)
   const tabelaClientes = document.querySelector('#tabelaClientes');
   tabelaClientes.removeEventListener('click', updateStatus)
   fetch(rotaApi + '/clientes', {
@@ -63,9 +62,9 @@ function callbackUpdateStatus(event) {
     const dataCnpj = event.target.dataset.cnpj
     console.log(dataSituacao)
     if (dataSituacao === 'Liberado') {
-      bloquearCliente(dataCnpj, { situacao: 'Bloqueado' })
+      bloquearCliente(dataCnpj, { status: 'Bloqueado' })
     } else {
-      bloquearCliente(dataCnpj, { situacao: 'Liberado' })
+      bloquearCliente(dataCnpj, { status: 'Liberado' })
     }
   }
 };
@@ -73,10 +72,10 @@ function callbackUpdateStatus(event) {
 
 
 async function bloquearCliente(cnpj, bodyRequest) {
+  console.log(bodyRequest)
   const token = localStorage.getItem('token')
-  console.log(token)
   fetch(rotaApi + '/clientes/' + cnpj, {
-    method: 'PUT',
+    method: 'PATCH',
     mode: 'cors',
     headers: {
        'Content-Type': 'application/json',
@@ -95,9 +94,13 @@ async function bloquearCliente(cnpj, bodyRequest) {
 }
 
 async function deleteCliente(cnpj) {
-
+  const token = localStorage.getItem('token');
   fetch(rotaApi + '/clientes/' + cnpj, {
     method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Baerer ${token}` 
+    },
     mode: 'cors'
   })
     .then(async resposta => {
@@ -171,6 +174,8 @@ document.querySelector('#formCadastro').addEventListener('submit', async (event)
   dadosFormulario.forEach((valor, chave) => {
     bodyRequest[chave] = valor
   })
+
+  console.log(bodyRequest)
 
   try {
     const resposta = await fetch(rotaApi + '/clientes/', {
