@@ -16,41 +16,6 @@ class Usuario {
     }
 }
 
-async function getUsuario() {
-    let usuario = document.querySelector('#inptEmail').value;
-    let senha = document.querySelector('#inptPassword').value;
-
-try{
-   const resposta = await fetch(rotaApi+'/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    mode: 'cors',
-                    body: JSON.stringify({ userName: usuario, senhaUser: senha })
-                    })
-
-    if(!resposta.ok){
-        const dadosErro = await resposta.json();
-        throw new Error(dadosErro.message);
-    }
-        
-    const dadosResposta = await resposta.json()
-    if(dadosResposta.token){
-        console.log(dadosResposta.token)
-        localStorage.setItem('token', dadosResposta.token);
-        window.location.href = "dashboard.html";
-}
-}catch (erro){
-   console.error(erro.message);
-}
-}
-           
-            
-
-    
-
-
-
-
 
 //IIFE PARA FAZER A VALIDAÇAO DA SENHA E INFORMAÇAO DO E-MAIL
 (function () {
@@ -120,8 +85,18 @@ try{
         })
     }
 
+    //INSTANCIANDO OS MÉTODOS FACTORY DO MODAL
+
+    validPassword();
+    btnSubmit();
+
+})();
+
     //FUNÇÃO PARA MANIPULAR O MODAL DE ERRO NA TELA
     function funcModal() {
+        const inptSenha = document.querySelector('#inptPassword');
+        const inptEmail = document.querySelector('#inptEmail');
+        
         //MONITORAR O EVENTO CLICK NO BOTÃO PARA FECHAR O MODAL DERRO
         document.querySelector('.btnCloseModal').addEventListener('click', () => {
             modal.closeModal();
@@ -165,14 +140,34 @@ try{
             }
         }
     }
-    //INSTANCIANDO OS MÉTODOS FACTORY DO MODAL
     const modal = funcModal();
 
-    validPassword();
-    btnSubmit();
+async function getUsuario() {
+    let usuario = document.querySelector('#inptEmail').value;
+    let senha = document.querySelector('#inptPassword').value;
+   
+try{
+   const resposta = await fetch(rotaApi+'/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors',
+                    body: JSON.stringify({ userName: usuario, senhaUser: senha })
+                    })
 
-})();
-
+    if(!resposta.ok){
+        const dadosErro = await resposta.json();
+        throw new Error(dadosErro.message);
+    }
+        
+    const dadosResposta = await resposta.json()
+    if(dadosResposta.token){
+        localStorage.setItem('token', dadosResposta.token);
+        window.location.href = "dashboard.html";
+}
+}catch (error){
+    modal.openModal(error.message)   
+}
+}
 
 
 
