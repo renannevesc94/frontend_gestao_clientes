@@ -16,9 +16,9 @@
                 <img src="./assets/images/logoSofthouse.png" width="60" height="100">
             </a>
         </div>
-            <div class="navbar-item is-expanded is-flex is-justify-content-center">
-                <h1 class="has-text-light is-size-3	">Gerenciamento de Clientes</h1>
-            </div>
+        <div class="navbar-item is-expanded is-flex is-justify-content-center">
+            <h1 class="has-text-light is-size-4	">Gerenciamento de Clientes</h1>
+        </div>
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
@@ -30,8 +30,8 @@
                     </a>
                 </div>
             </div>
-    
-            </div>
+
+        </div>
         </div>
         </div>
     </nav>
@@ -110,12 +110,39 @@
                     </form>
 
                 </div>
-
             </div>
         </div>
-
-
     </div>
+
+    <div class="modal" id="modalInfo">
+        <div class="modal-content ">
+            <div class="card has-background-grey-lighter">
+                <header class="card-header is-centered">
+                    <div class="container">
+                  <p class="is-size-4 has-text-centered has-text-weight-semibold has-text-danger">
+                    ATENÇÃO!
+                  </p>
+                    </div>
+                  
+                  <button class="card-header-icon" aria-label="more options">
+                    <span class="icon">
+                      <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </header>
+                <div class="card-content">
+                  <div class="content has-text-centered">
+                   <p class="is-size-5 has-text-link" id="conteudoModal"></p>
+                  </div>
+                </div>
+                <footer class="card-footer">
+                  <button class="card-footer-item button is-info okCloseModal has-text-light has-text-weight-semibold" id="okCloseModal">OK</button>
+        
+                </footer>
+              </div>
+        </div>
+        <button class="modal-close is-large is-danger" aria-label="close"></button>
+      </div>
 
     <script src="assets/scriptClients.js"></script>
 </body>

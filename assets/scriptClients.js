@@ -85,11 +85,12 @@ async function bloquearCliente(cnpj, bodyRequest) {
   })
     .then(async response => {
       const resposta = await response.json()
-      alert(resposta.message)
+      openModalInfo(resposta.message)
       getClientes();
     })
     .catch(error => {
-      alert(error.message)
+      openModalInfo(error.message)
+      
     })
 }
 
@@ -105,17 +106,35 @@ async function deleteCliente(cnpj) {
   })
     .then(async resposta => {
       resposta = await resposta.json();
-      alert(resposta.message)
+      openModalInfo(resposta.message)
       getClientes();
     })
 
 
-    .catch(erro => {
-      alert(erro.message)
+    .catch(error => {
+      openModalInfo(error.message)
     })
 }
+
+
+//ESTOU TRABALHANDO AQUI NESSA LINHA
+function openModalInfo(message){
+  
+  function openModal($el) {
+    $el.classList.add('is-active');
+  }
+  const modal = document.querySelector('#modalInfo');
+  const conteudoModal = document.querySelector('#conteudoModal');
+  conteudoModal.textContent = message
+
+  openModal(modal);
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
   getClientes()
+
+ 
   // Functions to open and close a modal
   function openModal($el) {
     $el.classList.add('is-active');
@@ -142,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Add a click event on various child elements to close the parent modal
-  (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button, #closeModal') || []).forEach(($close) => {
+  (document.querySelectorAll('.modal-background, .okCloseModal, .modal-close, .modal-card-head .delete, .modal-card-foot .button, #closeModal') || []).forEach(($close) => {
     const $target = $close.closest('.modal');
 
     $close.addEventListener('click', () => {
@@ -159,6 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+
 
 document.querySelector('#formCadastro').addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -192,13 +213,13 @@ document.querySelector('#formCadastro').addEventListener('submit', async (event)
       throw new Error(dataErro.message)
     } else {
       const dadosResposta = await resposta.json()
-      alert(dadosResposta.message);
+      openModalInfo(resposta.message)
       closeModal(modal);
       getClientes();
     }
 
-  } catch (erro) {
-    alert(erro)
+  } catch (error) {
+    openModalInfo(error.message)
   }
 })
 
