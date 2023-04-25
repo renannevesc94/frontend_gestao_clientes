@@ -1,31 +1,44 @@
 const rotaApi = 'https://api-gestao-clientes.onrender.com'
 
-async function getClientes() {
-  const token = localStorage.getItem('token');
-  const tabelaClientes = document.querySelector('#tabelaClientes');
-  tabelaClientes.removeEventListener('click', updateStatus)
-  fetch(rotaApi + '/clientes', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    mode: 'cors'
-  })
-    .then(async resposta => {
-      if (!resposta.ok) {
-        const dataError = await resposta.json();
-        throw new Error(dataError.message)
-      }
-      return resposta.json();
+function funcGetAllClientes(next, previous) {
+  let previousUrl, nextUrl;
+  let url = '/clientes';
+
+  async function _getAllClientes(next, previous) {
+
+    url = next ? nextUrl : (previous ? previousUrl : url);
+
+    const token = localStorage.getItem('token');
+    const tabelaClientes = document.querySelector('#tabelaClientes');
+    tabelaClientes.removeEventListener('click', updateStatus)
+
+    fetch(rotaApi + url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      mode: 'cors',
     })
+      .then(async resposta => {
+        if (!resposta.ok) {
+          const dataError = await resposta.json();
+          throw new Error(dataError.message)
+        }
+        return resposta.json();
+      })
+      .then(dados => {
+        nextUrl = dados.nextUrl;
+        previousUrl = dados.anteriorUrl;
+        nextUrl === null ?  desativarButton('#pageNext') : '';
+        previousUrl === null ?  desativarButton('#pagePreviou') : ativarButton('#pagePreviou')
+        
+     
+        let linhas = '';
 
-    .then(dados => {
-      let linhas = '';
+        dados.results.forEach(dado => {
 
-      dados.forEach(dado => {
-
-        linhas += `
+          linhas += `
             <tr>
               <td>${dado.cnpj}</td>
               <td>${dado.razao}</td>
@@ -37,15 +50,40 @@ async function getClientes() {
               </td>
             </tr>
           `;
-      });
-      tabelaClientes.innerHTML = linhas;
-      updateStatus()
-    })
-    .catch(error => {
-      alert(error.message)
-    })
+        });
+        tabelaClientes.innerHTML = linhas;
+        updateStatus()
+      })
+      .catch(error => {
+        alert(error.message)
+      })
+  }
+  return _getAllClientes;
 }
 
+const getAllClientes = funcGetAllClientes()
+
+function listenBtnPages() {
+  const btnNext = document.querySelector('#pageNext');
+  btnNext.addEventListener('click', () => getAllClientes(true, false))
+
+  const btnPrevious = document.querySelector('#pagePreviou');
+  btnPrevious.addEventListener('click', () => getAllClientes(false, true))
+
+}
+
+
+const desativarButton = (btnDisable) => {
+  const btnNext = document.querySelector(btnDisable);
+  btnNext.disabled = true
+
+}
+
+const ativarButton = (btnDisable) => {
+  const btnNext = document.querySelector(btnDisable);
+  btnNext.disabled = false
+
+}
 
 function updateStatus() {
   const tabelaClientes = document.querySelector('.tabelaClientes');
@@ -90,7 +128,7 @@ async function bloquearCliente(cnpj, bodyRequest) {
     })
     .catch(error => {
       openModalInfo(error.message)
-      
+
     })
 }
 
@@ -118,8 +156,8 @@ async function deleteCliente(cnpj) {
 
 
 //ESTOU TRABALHANDO AQUI NESSA LINHA
-function openModalInfo(message){
-  
+function openModalInfo(message) {
+
   function openModal($el) {
     $el.classList.add('is-active');
   }
@@ -132,9 +170,8 @@ function openModalInfo(message){
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  getClientes()
-
- 
+  listenBtnPages()
+  getAllClientes()
   // Functions to open and close a modal
   function openModal($el) {
     $el.classList.add('is-active');
@@ -263,8 +300,8 @@ const config = {
 observer.observe(tabelaClientes, config);
 
 
-  const btnClosePage = document.querySelector('#btnClosePage');
-  btnClosePage.addEventListener('click', (event) => {
-    localStorage.clear();
-    window.location.href = "index.html"
+const btnClosePage = document.querySelector('#btnClosePage');
+btnClosePage.addEventListener('click', (event) => {
+  localStorage.clear();
+  window.location.href = "index.html"
 })

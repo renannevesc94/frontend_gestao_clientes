@@ -38,21 +38,30 @@
 
     <!--HTM MODAL-->
     <main>
-        <table class="table tabelaClientes mt-3 is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <thead>
-                <tr>
-                    <th style="width: 5%;">CNPJ</th>
-                    <th style="width: 25%;">RAZÃO</th>
-                    <th style="width: 5%;" class="has-text-centered">TELEFONE</th>
-                    <th style="width: 6%;" class="has-text-centered">CONTATO</th>
-                    <th style="width: 3%;" class="has-text-centered">SITUAÇÃO</th>
-                    <th style="width: 7%;" class="has-text-centered">AÇÃO</th>
-
-                </tr>
-            </thead>
-            <tbody id="tabelaClientes">
-            </tbody>
-        </table>
+        <nav class="pagination" role="navigation" aria-label="pagination">
+            <ul class="pagination-list">
+                <table class="table tabelaClientes mt-3 is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">CNPJ</th>
+                            <th style="width: 25%;">RAZÃO</th>
+                            <th style="width: 5%;" class="has-text-centered">TELEFONE</th>
+                            <th style="width: 6%;" class="has-text-centered">CONTATO</th>
+                            <th style="width: 3%;" class="has-text-centered">SITUAÇÃO</th>
+                            <th style="width: 7%;" class="has-text-centered">AÇÃO</th>
+        
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaClientes">
+                    </tbody>
+                </table>
+                <div>
+              <button class="button pagination-previous" id="pagePreviou" title="This is the first page">Anterior</button>
+              <button class="button pagination-next" id="pageNext">Próxima</button>
+            </div>
+            </ul>
+          </nav>
+        
     </main>
 
     <div id="modal-js-example" class="modal">
