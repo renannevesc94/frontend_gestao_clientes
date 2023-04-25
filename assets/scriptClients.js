@@ -7,6 +7,7 @@ function funcGetAllClientes(next, previous) {
   async function _getAllClientes(next, previous) {
 
     url = next ? nextUrl : (previous ? previousUrl : url);
+	console.log(url)
 
     const token = localStorage.getItem('token');
     const tabelaClientes = document.querySelector('#tabelaClientes');
@@ -29,8 +30,8 @@ function funcGetAllClientes(next, previous) {
       })
       .then(dados => {
         nextUrl = dados.nextUrl;
-        previousUrl = dados.anteriorUrl;
-        nextUrl === null ?  desativarButton('#pageNext') : '';
+        previousUrl = dados.previousUrl;
+        nextUrl === null ?  desativarButton('#pageNext') : ativarButton('#pageNext') ;
         previousUrl === null ?  desativarButton('#pagePreviou') : ativarButton('#pagePreviou')
         
      
