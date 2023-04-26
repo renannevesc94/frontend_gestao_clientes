@@ -42,7 +42,7 @@ function funcGetAllClientes(next, previous) {
           linhas += `
             <tr>
               <td>${dado.cnpj}</td>
-              <td>${dado.razao}</td>
+              <td class="has-text-left">${dado.razao}</td>
               <td>${dado.telefone}</td>
               <td>${dado.contato}</td>
               <td class="situacao has-text-weight-bold has-text-white">${dado.situacao}</td>
@@ -56,7 +56,7 @@ function funcGetAllClientes(next, previous) {
         updateStatus()
       })
       .catch(error => {
-        alert(error.message)
+        openModalInfo(error.message)
       })
   }
   return _getAllClientes;
@@ -125,7 +125,7 @@ async function bloquearCliente(cnpj, bodyRequest) {
     .then(async response => {
       const resposta = await response.json()
       openModalInfo(resposta.message)
-      getClientes();
+      getAllClientes();
     })
     .catch(error => {
       openModalInfo(error.message)
@@ -146,7 +146,7 @@ async function deleteCliente(cnpj) {
     .then(async resposta => {
       resposta = await resposta.json();
       openModalInfo(resposta.message)
-      getClientes();
+      getAllClientes();
     })
 
 

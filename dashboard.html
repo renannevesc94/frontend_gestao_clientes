@@ -36,32 +36,70 @@
         </div>
     </nav>
 
-    <!--HTM MODAL-->
+
     <main>
+        <div class="columns mt-1 mb-0 ml-2 mt-2 is-gapless">
+
+            <div class="column is-3 mt-2 has-text-weight-bold">
+                <div class="control ml-3">
+                    <label class="radio">
+                        <input type="radio" name="filterCli">
+                        Todos
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="filterCli">
+                        Bloqueados
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="filterCli">
+                        Liberados
+                    </label>
+                </div>
+            </div>
+
+            <div class="column is-3 mr-1">
+                <div class="control">
+                    <input class="input is-focused is-marginless" type="text" placeholder="Pesquisar Cliente">
+                </div>
+            </div>
+            <div class="column">
+                <button class="button is-primary">Filtrar</button>
+            </div>
+        </div>
         <nav class="pagination" role="navigation" aria-label="pagination">
             <ul class="pagination-list">
-                <table class="table tabelaClientes mt-3 is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <table
+                    class="table tabelaClientes mt-2 mb-0 is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th style="width: 5%;">CNPJ</th>
-                            <th style="width: 25%;">RAZÃO</th>
+                            <th style="width: 20%;">RAZÃO</th>
                             <th style="width: 5%;" class="has-text-centered">TELEFONE</th>
                             <th style="width: 6%;" class="has-text-centered">CONTATO</th>
                             <th style="width: 3%;" class="has-text-centered">SITUAÇÃO</th>
                             <th style="width: 7%;" class="has-text-centered">AÇÃO</th>
-        
+
                         </tr>
                     </thead>
                     <tbody id="tabelaClientes">
                     </tbody>
                 </table>
-                <div>
-              <button class="button pagination-previous" id="pagePreviou" title="This is the first page">Anterior</button>
-              <button class="button pagination-next" id="pageNext">Próxima</button>
-            </div>
+                <div class="column is-offset-10 mt-0">
+                    <button class="button pagination-previous is-dark" id="pagePreviou"
+                        title="This is the first page">Anterior</button>
+                    <button class="button pagination-next is-dark" id="pageNext">Próxima</button>
+
+                </div>
             </ul>
-          </nav>
-        
+        </nav>
+        <p class="ml-2 is-italic has-text-weight-bold">
+            Versão beta 1.0.0
+            <p class="is-italic ml-2">
+                *Em implantção os campos de filtro e busca<br>
+                + Implantado paginação no BD
+            </p>
+        </p>
+
     </main>
 
     <div id="modal-js-example" class="modal">
@@ -128,30 +166,31 @@
             <div class="card has-background-grey-lighter">
                 <header class="card-header is-centered">
                     <div class="container">
-                  <p class="is-size-4 has-text-centered has-text-weight-semibold has-text-danger">
-                    ATENÇÃO!
-                  </p>
+                        <p class="is-size-4 has-text-centered has-text-weight-semibold has-text-danger">
+                            ATENÇÃO!
+                        </p>
                     </div>
-                  
-                  <button class="card-header-icon" aria-label="more options">
-                    <span class="icon">
-                      <i class="fas fa-angle-down" aria-hidden="true"></i>
-                    </span>
-                  </button>
+
+                    <button class="card-header-icon" aria-label="more options">
+                        <span class="icon">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                    </button>
                 </header>
                 <div class="card-content">
-                  <div class="content has-text-centered">
-                   <p class="is-size-5 has-text-link" id="conteudoModal"></p>
-                  </div>
+                    <div class="content has-text-centered">
+                        <p class="is-size-5 has-text-link" id="conteudoModal"></p>
+                    </div>
                 </div>
                 <footer class="card-footer">
-                  <button class="card-footer-item button is-info okCloseModal has-text-light has-text-weight-semibold" id="okCloseModal">OK</button>
-        
+                    <button class="card-footer-item button is-info okCloseModal has-text-light has-text-weight-semibold"
+                        id="okCloseModal">OK</button>
+
                 </footer>
-              </div>
+            </div>
         </div>
         <button class="modal-close is-large is-danger" aria-label="close"></button>
-      </div>
+    </div>
 
     <script src="assets/scriptClients.js"></script>
 </body>
