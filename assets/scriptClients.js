@@ -1,95 +1,22 @@
-const rotaApi = 'https://api-gestao-clientes.onrender.com'
+import clients from "./modules/getClients.js";
 
-function funcGetAllClientes(next, previous) {
-  let previousUrl, nextUrl;
-  let url = '/clientes';
+const rotaApi = 'http://192.168.1.64:3000'
+const findClients = clients();
 
-  async function _getAllClientes(next, previous) {
-
-    url = next ? nextUrl : (previous ? previousUrl : url);
-	console.log(url)
-
-    const token = localStorage.getItem('token');
-    const tabelaClientes = document.querySelector('#tabelaClientes');
-    tabelaClientes.removeEventListener('click', updateStatus)
-
-    fetch(rotaApi + url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      mode: 'cors',
-    })
-      .then(async resposta => {
-        if (!resposta.ok) {
-          const dataError = await resposta.json();
-          throw new Error(dataError.message)
-        }
-        return resposta.json();
-      })
-      .then(dados => {
-        nextUrl = dados.nextUrl;
-        previousUrl = dados.previousUrl;
-        nextUrl === null ?  desativarButton('#pageNext') : ativarButton('#pageNext') ;
-        previousUrl === null ?  desativarButton('#pagePreviou') : ativarButton('#pagePreviou')
-        
-     
-        let linhas = '';
-
-        dados.results.forEach(dado => {
-
-          linhas += `
-            <tr>
-              <td>${dado.cnpj}</td>
-              <td class="has-text-left">${dado.razao}</td>
-              <td>${dado.telefone}</td>
-              <td>${dado.contato}</td>
-              <td class="situacao has-text-weight-bold has-text-white">${dado.situacao}</td>
-              <td> <button class="button is-primary is-small has-text-weight-bold btn-update" data-situacao="${dado.situacao}" data-cnpj="${dado.cnpj}" >Editar</button>
-                   <button class="button is-danger is-small btn-delete has-text-weight-bold" data-cnpj="${dado.cnpj}">Excluir</button>
-              </td>
-            </tr>
-          `;
-        });
-        tabelaClientes.innerHTML = linhas;
-        updateStatus()
-      })
-      .catch(error => {
-        openModalInfo(error.message)
-      })
-  }
-  return _getAllClientes;
-}
-
-const getAllClientes = funcGetAllClientes()
 
 function listenBtnPages() {
   const btnNext = document.querySelector('#pageNext');
-  btnNext.addEventListener('click', () => getAllClientes(true, false))
-
   const btnPrevious = document.querySelector('#pagePreviou');
-  btnPrevious.addEventListener('click', () => getAllClientes(false, true))
-
+  const btnSearch = document.querySelector('.btnSearch')
+  btnSearch.addEventListener('click', () => funcGetAllClients(false, false,));
+  btnNext.addEventListener('click', () => funcGetAllClients(true, false,));
+  btnPrevious.addEventListener('click', () => funcGetAllClients(false, true));
 }
 
-
-const desativarButton = (btnDisable) => {
-  const btnNext = document.querySelector(btnDisable);
-  btnNext.disabled = true
-
-}
-
-const ativarButton = (btnDisable) => {
-  const btnNext = document.querySelector(btnDisable);
-  btnNext.disabled = false
-
-}
 
 function updateStatus() {
   const tabelaClientes = document.querySelector('.tabelaClientes');
   tabelaClientes.addEventListener('click', callbackUpdateStatus)
-
 }
 
 function callbackUpdateStatus(event) {
@@ -99,7 +26,6 @@ function callbackUpdateStatus(event) {
   } else if (event.target.classList.contains('btn-update')) {
     const dataSituacao = event.target.dataset.situacao
     const dataCnpj = event.target.dataset.cnpj
-    console.log(dataSituacao)
     if (dataSituacao === 'Liberado') {
       bloquearCliente(dataCnpj, { status: 'Bloqueado' })
     } else {
@@ -108,29 +34,15 @@ function callbackUpdateStatus(event) {
   }
 };
 
-
-
 async function bloquearCliente(cnpj, bodyRequest) {
-  console.log(bodyRequest)
-  const token = localStorage.getItem('token')
-  fetch(rotaApi + '/clientes/' + cnpj, {
-    method: 'PATCH',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify(bodyRequest)
+  await findClients.updateStatus(cnpj, bodyRequest)
+  .then(response => {
+    openModalInfo(response.message);
+    funcGetAllClients();
   })
-    .then(async response => {
-      const resposta = await response.json()
-      openModalInfo(resposta.message)
-      getAllClientes();
-    })
-    .catch(error => {
-      openModalInfo(error.message)
-
-    })
+  .catch(error => {
+    openModalInfo(error.message);
+  });
 }
 
 async function deleteCliente(cnpj) {
@@ -146,7 +58,7 @@ async function deleteCliente(cnpj) {
     .then(async resposta => {
       resposta = await resposta.json();
       openModalInfo(resposta.message)
-      getAllClientes();
+      getClients.getAllClients();
     })
 
 
@@ -155,8 +67,6 @@ async function deleteCliente(cnpj) {
     })
 }
 
-
-//ESTOU TRABALHANDO AQUI NESSA LINHA
 function openModalInfo(message) {
 
   function openModal($el) {
@@ -168,11 +78,64 @@ function openModalInfo(message) {
 
   openModal(modal);
 }
+async function funcGetAllClients(next, previous) {
+  const contentPesquisa = document.querySelector('.inptPesquisa').value
+  if (contentPesquisa.trim() === '') {
+    await findClients.getAllClients(next, previous)
+      .then(response => {
+        let linhas = '';
+        response.results.forEach(dado => {
 
+          linhas += `
+            <tr>
+              <td>${dado.cnpj}</td>
+              <td class="has-text-left">${dado.razao}</td>
+              <td>${dado.telefone}</td>
+              <td>${dado.contato}</td>
+              <td class="situacao has-text-weight-bold has-text-white">${dado.situacao}</td>
+              <td> <button class="button is-primary is-small has-text-weight-bold btn-update" data-situacao="${dado.situacao}" data-cnpj="${dado.cnpj}" >Editar</button>
+                   <button class="button is-danger is-small btn-delete has-text-weight-bold" data-cnpj="${dado.cnpj}">Excluir</button>
+              </td>
+            </tr>
+          `;
+        });
+        tabelaClientes.innerHTML = linhas;
+        updateStatus();
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  } else {
+    await findClients.findClients(contentPesquisa, next, previous)
+      .then(response => {
+        let linhas = '';
+        response.results.forEach(dado => {
+
+          linhas += `
+            <tr>
+              <td>${dado.cnpj}</td>
+              <td class="has-text-left">${dado.razao}</td>
+              <td>${dado.telefone}</td>
+              <td>${dado.contato}</td>
+              <td class="situacao has-text-weight-bold has-text-white">${dado.situacao}</td>
+              <td> <button class="button is-primary is-small has-text-weight-bold btn-update" data-situacao="${dado.situacao}" data-cnpj="${dado.cnpj}" >Editar</button>
+                   <button class="button is-danger is-small btn-delete has-text-weight-bold" data-cnpj="${dado.cnpj}">Excluir</button>
+              </td>
+            </tr>
+          `;
+        });
+        tabelaClientes.innerHTML = linhas;
+        updateStatus();
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   listenBtnPages()
-  getAllClientes()
+  funcGetAllClients()
   // Functions to open and close a modal
   function openModal($el) {
     $el.classList.add('is-active');
@@ -233,9 +196,6 @@ document.querySelector('#formCadastro').addEventListener('submit', async (event)
   dadosFormulario.forEach((valor, chave) => {
     bodyRequest[chave] = valor
   })
-
-  console.log(bodyRequest)
-
   try {
     const resposta = await fetch(rotaApi + '/clientes/', {
       method: 'POST',

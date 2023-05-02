@@ -1,4 +1,8 @@
 const rotaApi = 'https://api-gestao-clientes.onrender.com'
+import CreateFetch from "./libs/request.js";
+
+const fetchApi = CreateFetch({})
+
 //CLASSE PARA CRIAÇAO DE USUÁRIO COM MÉTODO PARA VALIDAR SENHA
 class Usuario {
     constructor(usuario, senha) {
@@ -92,82 +96,93 @@ class Usuario {
 
 })();
 
-    //FUNÇÃO PARA MANIPULAR O MODAL DE ERRO NA TELA
-    function funcModal() {
-        const inptSenha = document.querySelector('#inptPassword');
-        const inptEmail = document.querySelector('#inptEmail');
-        
-        //MONITORAR O EVENTO CLICK NO BOTÃO PARA FECHAR O MODAL DERRO
-        document.querySelector('.btnCloseModal').addEventListener('click', () => {
+//FUNÇÃO PARA MANIPULAR O MODAL DE ERRO NA TELA
+function funcModal() {
+    const inptSenha = document.querySelector('#inptPassword');
+    const inptEmail = document.querySelector('#inptEmail');
+
+    //MONITORAR O EVENTO CLICK NO BOTÃO PARA FECHAR O MODAL DERRO
+    document.querySelector('.btnCloseModal').addEventListener('click', () => {
+        modal.closeModal();
+    });
+
+    //MONITORAR O CLICK NA DIV MODAL PARA FECHAR O MODAL DE ERRO
+    document.querySelector('.modal').addEventListener('click', (event) => {
+        if (event.target.classList == 'modal') {
             modal.closeModal();
-        });
+        }
+    });
 
-        //MONITORAR O CLICK NA DIV MODAL PARA FECHAR O MODAL DE ERRO
-        document.querySelector('.modal').addEventListener('click', (event) => {
-            if (event.target.classList == 'modal') {
-                modal.closeModal();
-            }
-        });
+    const divModal = document.querySelector('.modal');
+    return {
+        //MÉTODO PARA FECHAR O MODAL DE ERRO
+        closeModal: () => {
+            //ANTES VERIFICO SE A MENSÁGEM É DO CAMPO USUÁRIO PARA DEFINIR ONDE VAI O FOCO
+            //APOS FECHAR O MODAL
+            if (document.querySelector('.msgModal').textContent.includes('USUÁRIO')) {
+                inptEmail.focus();
+            } else inptSenha.focus();
 
-        const divModal = document.querySelector('.modal');
-        return {
-            //MÉTODO PARA FECHAR O MODAL DE ERRO
-            closeModal: () => {
-                //ANTES VERIFICO SE A MENSÁGEM É DO CAMPO USUÁRIO PARA DEFINIR ONDE VAI O FOCO
-                //APOS FECHAR O MODAL
-                if (document.querySelector('.msgModal').textContent.includes('USUÁRIO')) {
-                    inptEmail.focus();
-                } else inptSenha.focus();
+            divModal.style.display = 'none';
+        },
 
-                divModal.style.display = 'none';
-            },
+        //MÉTODO PARA EXIBIR O MODAL DE ERRO
+        openModal: (mensagem) => {
+            const divPai = document.querySelector('.btnCloseModal');
+            const existeDiv = document.querySelector('.msgModal');
 
-            //MÉTODO PARA EXIBIR O MODAL DE ERRO
-            openModal: (mensagem) => {
-                const divPai = document.querySelector('.btnCloseModal');
-                const existeDiv = document.querySelector('.msgModal');
-
-                //CONDIÇAO PARA VERIFICAR SE O ELEMENTO DO MODAL FOI CRIADA E SE SIM REMOVER
-                if (existeDiv) {
-                    existeDiv.remove();
-                };
-                //CRIANDO O ELEMENTO DO MODAL  MONTANDO UM PARAGRAFO COM A MSG QUE VEM NO PARAMETRO
-                const msgErro = document.createElement('p');
-                msgErro.classList.add('msgModal')
-                msgErro.innerHTML = mensagem
-                divPai.insertAdjacentHTML("beforebegin", msgErro.outerHTML);
-                divModal.style.display = 'grid'
-            }
+            //CONDIÇAO PARA VERIFICAR SE O ELEMENTO DO MODAL FOI CRIADA E SE SIM REMOVER
+            if (existeDiv) {
+                existeDiv.remove();
+            };
+            //CRIANDO O ELEMENTO DO MODAL  MONTANDO UM PARAGRAFO COM A MSG QUE VEM NO PARAMETRO
+            const msgErro = document.createElement('p');
+            msgErro.classList.add('msgModal')
+            msgErro.innerHTML = mensagem
+            divPai.insertAdjacentHTML("beforebegin", msgErro.outerHTML);
+            divModal.style.display = 'grid'
         }
     }
-    const modal = funcModal();
+}
+const modal = funcModal();
 
 async function getUsuario() {
     let usuario = document.querySelector('#inptEmail').value;
     let senha = document.querySelector('#inptPassword').value;
-   
-try{
-   const resposta = await fetch(rotaApi+'/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    mode: 'cors',
-                    body: JSON.stringify({ userName: usuario, senhaUser: senha })
-                    })
 
-    if(!resposta.ok){
-        const dadosErro = await resposta.json();
-        throw new Error(dadosErro.message);
-    }
-        
-    const dadosResposta = await resposta.json()
-    if(dadosResposta.token){
-        localStorage.setItem('token', dadosResposta.token);
-        window.location.href = "dashboard.html";
+        const data = { userName: usuario, senhaUser: senha }
+        const rota = '/login'
+        fetchApi.post(rota, data)
+        .then((response) =>{
+            localStorage.setItem('token', response.token);
+            window.location.href = "dashboard.html"; 
+        })
+        .catch((error) => {
+            modal.openModal(error.message)
+        })      
 }
-}catch (error){
-    modal.openModal(error.message)   
-}
-}
+
+
+
+/*  const resposta = await fetch(rotaApi+'/login', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         mode: 'cors',
+                         body: JSON.stringify({ userName: usuario, senhaUser: senha })
+                         })
+     
+         if(!resposta.ok){
+             const dadosErro = await resposta.json();
+             throw new Error(dadosErro.message);
+         }
+             
+         const dadosResposta = await resposta.json()
+         if(dadosResposta.token){
+             localStorage.setItem('token', dadosResposta.token);
+             window.location.href = "dashboard.html"; 
+    } */
+
+
 
 
 
