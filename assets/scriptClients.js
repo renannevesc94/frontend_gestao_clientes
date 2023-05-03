@@ -81,8 +81,16 @@ async function funcGetClients(next, previous) {
               <td>${dado.telefone}</td>
               <td>${dado.contato}</td>
               <td class="situacao has-text-weight-bold has-text-white">${dado.situacao}</td>
-              <td> <button class="button is-primary is-small has-text-weight-bold btn-update" data-situacao="${dado.situacao}" data-cnpj="${dado.cnpj}" >Editar</button>
-                   <button class="button is-danger is-small btn-delete has-text-weight-bold" data-cnpj="${dado.cnpj}">Excluir</button>
+              <td> <button class="button btn-update is-primary is-small has-text-weight-bold" data-situacao="${dado.situacao}" data-cnpj="${dado.cnpj}" >
+                     <span class="icon">
+                       <i class="fas fa-ban fa-lg btn-update" data-situacao="${dado.situacao}" data-cnpj="${dado.cnpj}" ></i>
+                    </span>
+                  </button>
+              <button class="button is-danger is-small btn-delete has-text-weight-bold" data-cnpj="${dado.cnpj}">
+                 <span class="icon is-large">
+                    <i class="fas fa-trash fa-lg btn-delete"data-cnpj="${dado.cnpj}"></i>
+                  </span>
+              </button>
               </td>
             </tr>
           `;
@@ -183,12 +191,12 @@ document.querySelector('#formCadastro').addEventListener('submit', async (event)
   })
 
   Client.insertClente(bodyRequest)
-  .then(response => {
-    openModalInfo(response.message)
-  })
-  .catch(error => {
-    openModalInfo(error.message)
-  })
+    .then(response => {
+      openModalInfo(response.message)
+    })
+    .catch(error => {
+      openModalInfo(error.message)
+    })
 })
 
 
