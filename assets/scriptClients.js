@@ -1,16 +1,16 @@
-import clients from "./modules/getClients.js";
+import clients from "./modules/Clients.js";
 
 const rotaApi = 'http://192.168.1.64:3000'
-const findClients = clients();
+const Client = clients();
 
 
 function listenBtnPages() {
   const btnNext = document.querySelector('#pageNext');
   const btnPrevious = document.querySelector('#pagePreviou');
   const btnSearch = document.querySelector('.btnSearch')
-  btnSearch.addEventListener('click', () => funcGetAllClients(false, false,));
-  btnNext.addEventListener('click', () => funcGetAllClients(true, false,));
-  btnPrevious.addEventListener('click', () => funcGetAllClients(false, true));
+  btnSearch.addEventListener('click', () => funcGetClients(false, false,));
+  btnNext.addEventListener('click', () => funcGetClients(true, false,));
+  btnPrevious.addEventListener('click', () => funcGetClients(false, true));
 }
 
 
@@ -35,40 +35,28 @@ function callbackUpdateStatus(event) {
 };
 
 async function bloquearCliente(cnpj, bodyRequest) {
-  await findClients.updateStatus(cnpj, bodyRequest)
-  .then(response => {
-    openModalInfo(response.message);
-    funcGetAllClients();
-  })
-  .catch(error => {
-    openModalInfo(error.message);
-  });
+  await Client.updateStatus(cnpj, bodyRequest)
+    .then(response => {
+      openModalInfo(response.message);
+      funcGetClients();
+    })
+    .catch(error => {
+      openModalInfo(error.message);
+    });
 }
 
 async function deleteCliente(cnpj) {
-  const token = localStorage.getItem('token');
-  fetch(rotaApi + '/clientes/' + cnpj, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Baerer ${token}`
-    },
-    mode: 'cors'
-  })
-    .then(async resposta => {
-      resposta = await resposta.json();
-      openModalInfo(resposta.message)
-      getClients.getAllClients();
+  Client.deleteCLient(cnpj)
+    .then(response => {
+      openModalInfo(response.message)
+      funcGetClients();
     })
-
-
-    .catch(error => {
-      openModalInfo(error.message)
+    .catch(erro => {
+      openModalInfo(erro.message)
     })
 }
 
 function openModalInfo(message) {
-
   function openModal($el) {
     $el.classList.add('is-active');
   }
@@ -78,10 +66,10 @@ function openModalInfo(message) {
 
   openModal(modal);
 }
-async function funcGetAllClients(next, previous) {
+async function funcGetClients(next, previous) {
   const contentPesquisa = document.querySelector('.inptPesquisa').value
   if (contentPesquisa.trim() === '') {
-    await findClients.getAllClients(next, previous)
+    await Client.getAllClients(next, previous)
       .then(response => {
         let linhas = '';
         response.results.forEach(dado => {
@@ -103,10 +91,10 @@ async function funcGetAllClients(next, previous) {
         updateStatus();
       })
       .catch(error => {
-        console.log(error)
+        openModalInfo(error.message)
       })
   } else {
-    await findClients.findClients(contentPesquisa, next, previous)
+    await Client.findClients(contentPesquisa, next, previous)
       .then(response => {
         let linhas = '';
         response.results.forEach(dado => {
@@ -128,14 +116,14 @@ async function funcGetAllClients(next, previous) {
         updateStatus();
       })
       .catch(error => {
-        console.log(error)
+        openModalInfo(error.message)
       })
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   listenBtnPages()
-  funcGetAllClients()
+  funcGetClients()
   // Functions to open and close a modal
   function openModal($el) {
     $el.classList.add('is-active');
@@ -180,11 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
-
 document.querySelector('#formCadastro').addEventListener('submit', async (event) => {
   event.preventDefault();
-  const token = localStorage.getItem('token')
   const modal = document.getElementById('modal-js-example');
   function closeModal($el) {
     $el.classList.remove('is-active');
@@ -196,29 +181,14 @@ document.querySelector('#formCadastro').addEventListener('submit', async (event)
   dadosFormulario.forEach((valor, chave) => {
     bodyRequest[chave] = valor
   })
-  try {
-    const resposta = await fetch(rotaApi + '/clientes/', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(bodyRequest)
-    })
-    if (!resposta.ok) {
-      const dataErro = await resposta.json();
-      throw new Error(dataErro.message)
-    } else {
-      const dadosResposta = await resposta.json()
-      openModalInfo(resposta.message)
-      closeModal(modal);
-      getClientes();
-    }
 
-  } catch (error) {
+  Client.insertClente(bodyRequest)
+  .then(response => {
+    openModalInfo(response.message)
+  })
+  .catch(error => {
     openModalInfo(error.message)
-  }
+  })
 })
 
 

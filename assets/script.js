@@ -1,7 +1,5 @@
-const rotaApi = 'https://api-gestao-clientes.onrender.com'
-import CreateFetch from "./libs/request.js";
-
-const fetchApi = CreateFetch({})
+import fetchWrapper from "./libs/fetchApi.js";
+const apiFetch = fetchWrapper({})
 
 //CLASSE PARA CRIAÇAO DE USUÁRIO COM MÉTODO PARA VALIDAR SENHA
 class Usuario {
@@ -149,41 +147,24 @@ const modal = funcModal();
 async function getUsuario() {
     let usuario = document.querySelector('#inptEmail').value;
     let senha = document.querySelector('#inptPassword').value;
-
-        const data = { userName: usuario, senhaUser: senha }
+        const teste = { userName: usuario, senhaUser: senha }
         const rota = '/login'
-        fetchApi.post(rota, data)
-        .then((response) =>{
+        const data = JSON.stringify(teste);
+
+        try {
+           const response = await apiFetch.post(rota, data) 
             localStorage.setItem('token', response.token);
             window.location.href = "dashboard.html"; 
-        })
-        .catch((error) => {
-            modal.openModal(error.message)
-        })      
+        } catch (error) {
+           modal.openModal(error.message)
+        }
+
+
+
+        
+      
+         
+        
+         
 }
-
-
-
-/*  const resposta = await fetch(rotaApi+'/login', {
-                         method: 'POST',
-                         headers: { 'Content-Type': 'application/json' },
-                         mode: 'cors',
-                         body: JSON.stringify({ userName: usuario, senhaUser: senha })
-                         })
-     
-         if(!resposta.ok){
-             const dadosErro = await resposta.json();
-             throw new Error(dadosErro.message);
-         }
-             
-         const dadosResposta = await resposta.json()
-         if(dadosResposta.token){
-             localStorage.setItem('token', dadosResposta.token);
-             window.location.href = "dashboard.html"; 
-    } */
-
-
-
-
-
 
