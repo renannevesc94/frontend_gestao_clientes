@@ -1,9 +1,9 @@
-import request from "../libs/fetchApi.js"
+import request from "./fetchApi.js"
 
 
 function clients() {
   let previousUrl, nextUrl, findPreviousUrl, findNextUrl;
-  
+
   //INSTANCIAR O MUDELE RESPONSÁVEL GERENCIAR AS CONEXÕES FETCH
   const fetchApi = request();
   //PEGAR O TOKEN SALVO NO LOCALSTRAGE PARA PASSAR NAS REQUISIÇÕES HTTP
@@ -19,9 +19,9 @@ function clients() {
     button.disabled = option
   }
 
-  async function insertClente(data) {
+  async function insertClient(data) {
     try {
-      const rotaApi = '/clientes'
+      const rotaApi = '/clientes/'
       const body = JSON.stringify(data);
       return await fetchApi.post(rotaApi, body)
     } catch (error) {
@@ -29,11 +29,16 @@ function clients() {
     }
   }
 
+  async function getCliByCnpj(filter) {
+    const rotaApi = `/clientes/${filter}`
+    return fetchApi.get(rotaApi)
+
+  }
+
   async function getAllClients(next, previous) {
     try {
       let url = '/clientes'
       url = next ? nextUrl : (previous ? previousUrl : url);
-      console.log('NO GET ALL => '+url)
       const response = await fetchApi.get(url);
       nextUrl = response.nextUrl;
       previousUrl = response.previousUrl;
@@ -46,13 +51,12 @@ function clients() {
 
   }
 
-  async function findClients(filter, _findNextUrl, _findPreviousUrl) {
+  async function findClients(filter, _findNextUrl, _findPreviousUrl, filterCli) {
 
     try {
       let findUrl = '/clientes/search?filtro='
-      findUrl = _findNextUrl ? findNextUrl : (_findPreviousUrl ? findPreviousUrl : findUrl + filter);
-      console.log('NO FIND A URL => '+findUrl)
-      const response = await fetchApi.get(findUrl);
+      findUrl = _findNextUrl ? findNextUrl : (_findPreviousUrl ? findPreviousUrl : `${findUrl}${filter}&status=${filterCli}`);
+      const response = await fetchApi.get(findUrl, filterCli);
       findNextUrl = response.nextUrl;
       findPreviousUrl = response.previousUrl;
       findNextUrl === null ? updateButtons('#pageNext', true) : updateButtons('#pageNext', false);
@@ -64,6 +68,16 @@ function clients() {
 
   }
 
+  async function updateClient(bodyRequest){
+    try {
+      const rotaApi = '/clientes/'+bodyRequest.cnpj
+      const body = JSON.stringify(bodyRequest);
+      return await fetchApi.put(rotaApi, body)
+    } catch (error) {
+      return error
+    }
+  }
+  
   async function updateStatus(cnpj, data) {
     try {
       const rotaApi = `/clientes/${cnpj}`
@@ -82,7 +96,15 @@ function clients() {
     }
   }
 
-  return { getAllClients, findClients, updateStatus, deleteCLient, insertClente };
+  return {
+    getAllClients,
+    findClients,
+    updateStatus, 
+    deleteCLient, 
+    insertClient, 
+    getCliByCnpj, 
+    updateClient 
+  };
 }
 
 export default clients

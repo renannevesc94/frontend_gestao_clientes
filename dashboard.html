@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
     <title>Gerenciamento de Usuários</title>
 </head>
@@ -24,7 +24,7 @@
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
-                    <a class="button is-primary js-modal-trigger" data-target="modal-js-example">
+                    <a class="button is-primary js-modal" data-modal="modal-form">
                         <strong>Novo Cliente</strong>
                     </a>
                     <a class="button is-danger" id="btnClosePage">
@@ -45,15 +45,15 @@
             <div class="column is-3 mt-2 has-text-weight-bold">
                 <div class="control ml-3">
                     <label class="radio">
-                        <input type="radio" name="filterCli">
+                        <input class="filterCli" type="radio" name="filterCli" value="" checked>
                         Todos
                     </label>
                     <label class="radio">
-                        <input type="radio" name="filterCli">
+                        <input class="filterCli" type="radio" name="filterCli" value="Bloqueado">
                         Bloqueados
                     </label>
                     <label class="radio">
-                        <input type="radio" name="filterCli">
+                        <input class="filterCli" type="radio" name="filterCli" value="Liberado">
                         Liberados
                     </label>
                 </div>
@@ -61,7 +61,8 @@
 
             <div class="column is-3 mr-1">
                 <div class="control">
-                    <input class="input is-focused is-marginless inptPesquisa" type="text" placeholder="Pesquisar Cliente">
+                    <input class="input is-focused is-marginless inptPesquisa" type="text"
+                        placeholder="Pesquisar Cliente">
                 </div>
             </div>
             <div class="column">
@@ -95,20 +96,11 @@
             </ul>
         </nav>
         <p class="ml-2 is-italic has-text-weight-bold">
-            Versão beta 1.0.0<br>
-            Pendncias:
-            <p class="is-italic ml-2">
-                *Campos de filtro e busca<br>
-                *Cache para dados de login<br>
-                *Edição dos campos com dados do cliente<br>
-                *Update no cóigo de encerramento da página<br>
-                *Encerrar página quando expirar token
-            </p>
+            Versão beta 1.0.0
         </p>
-
     </main>
 
-    <div id="modal-js-example" class="modal">
+    <div id="modal-form" class="modal">
         <div class="modal-background"></div>
         <div class="modal-content">
             <div class="box">
@@ -157,8 +149,8 @@
                                 name="alerta" placeholder="Menssagem personalizada"></textarea></label>
 
                         <div class="buttons is-centered mt-2">
-                            <button type="submit" class="button is-success">Cadastrar</button>
-                            <button type="button" id="closeModal" class="button is-danger close-modal">Cancelar</button>
+                            <button type="button" id="btn-cadastrar" class="button is-success">Cadastrar</button>
+                            <button type="button" class="button is-danger close-modal">Cancelar</button>
                         </div>
                     </form>
 
@@ -198,7 +190,7 @@
         <button class="modal-close is-large is-danger" aria-label="close"></button>
     </div>
 
-    <script type="module" src="assets/scriptClients.js"></script>
+    <script type="module" src="assets/App.js"></script>
 </body>
 
 </html>

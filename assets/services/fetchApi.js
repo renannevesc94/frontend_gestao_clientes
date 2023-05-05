@@ -14,21 +14,24 @@ function CreateFetch(headers = {}) {
             ...options,
             mode: 'cors'
         }
-        fetch(baseRota + rota, optionsFetch)
         const response = await fetch(baseRota + rota, optionsFetch);
-                if (!response.ok) {
-                    const dataError = await response.json();
-                    throw new Error(dataError.message)
-                }
-                return response.json()
+        if (!response.ok) {
+            const dataError = await response.json();
+            throw new Error(dataError.message)
+        }
+        return response.json()
     }
 
-    function get(rota, options) {
+    function get(rota, options, filter) {
         return requestApi(rota, { ...options, method: 'GET' })
     }
 
     function post(rota, body) {
         return requestApi(rota, { method: 'POST', body: body })
+    }
+
+    function put(rota, body) {
+        return requestApi(rota, { method: 'PUT', body: body })
     }
 
     function patch(rota, data) {
@@ -40,7 +43,7 @@ function CreateFetch(headers = {}) {
         return requestApi(rota, { method: 'DELETE' })
     }
 
-    return { get, post, setAuth, patch, deleteClient }
+    return { get, post, setAuth, patch, deleteClient, put}
 }
 
 export default CreateFetch;

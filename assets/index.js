@@ -1,4 +1,4 @@
-import fetchWrapper from "./libs/fetchApi.js";
+import fetchWrapper from "../assets/services/fetchApi.js";
 const apiFetch = fetchWrapper({})
 
 //CLASSE PARA CRIAÇAO DE USUÁRIO COM MÉTODO PARA VALIDAR SENHA
@@ -158,13 +158,6 @@ async function getUsuario() {
         } catch (error) {
            modal.openModal(error.message)
         }
-
-
-
-        
-      
-         
-        
-         
+     
 }
 
