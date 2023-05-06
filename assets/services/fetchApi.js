@@ -1,5 +1,5 @@
 function CreateFetch(headers = {}) {
-    const baseRota = 'http://192.168.1.64:3000' //Aqui vem a URL padrão da API
+    const baseRota = 'https://api-gestao-clientes.onrender.com' //Aqui vem a URL padrão da API
     headers = { 'Content-Type': 'application/json' }
 
     function setAuth(token) {
