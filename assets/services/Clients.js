@@ -1,16 +1,18 @@
+//MODULE RESPONSÁVEIS POR INTERMEDIAR AS MANIPULAÇÕES REFERENTES AOS CLIENES
 import request from "./fetchApi.js"
 
-
 function clients() {
+  const fetchApi = request();
   let previousUrl, nextUrl, findPreviousUrl, findNextUrl;
 
-  //INSTANCIAR O MUDELE RESPONSÁVEL GERENCIAR AS CONEXÕES FETCH
-  const fetchApi = request();
-  //PEGAR O TOKEN SALVO NO LOCALSTRAGE PARA PASSAR NAS REQUISIÇÕES HTTP
+  //FUNCTION PARA PEGAR O TOKEN SALVO NO LOCALSTORAGE NO MOMENTO DO LOGIN
   function getToken() {
     const token = localStorage.getItem('token');
     return token;
   }
+
+  //Passa para a factory que gerencia as conexões fetch o Token que está no loalstorage e persiste ele 
+  //em uma clusure para as próximas solicitações.
   fetchApi.setAuth(getToken())
 
   //ATIVAR E DESATIVAR BUTTONS DE PAGINAÇÃO CASO API NÃO RETORNE NEXT E PREVIOUS PAGES

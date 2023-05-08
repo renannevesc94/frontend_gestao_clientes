@@ -150,7 +150,7 @@ async function getUsuario() {
         const teste = { userName: usuario, senhaUser: senha }
         const rota = '/login'
         const data = JSON.stringify(teste);
-
+  
         try {
            const response = await apiFetch.post(rota, data) 
             localStorage.setItem('token', response.token);

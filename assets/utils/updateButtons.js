@@ -1,7 +1,6 @@
 
 function updateButtonForm(typeButton) {
     let btnUpdate = document.getElementById('btn-cadastrar');
-    console.log('CHEGUEI NA UPDATE BUTTONS')
     if (typeButton === 'update') {
       if (btnUpdate) {
         btnUpdate.id = 'btn-update';

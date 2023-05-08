@@ -1,14 +1,17 @@
 function CreateFetch(headers = {}) {
-    const baseRota = 'https://api-gestao-clientes.onrender.com' //Aqui vem a URL padrão da API
-    headers = { 'Content-Type': 'application/json' }
+    const baseRota = 'http://192.168.1.65:3000'//'https://api-gestao-clientes.onrender.com' //Aqui vem a URL padrão da API
+    headers = {...headers,'Content-Type': 'application/json' }
 
+    //Aqui é uma clousure para manter o token durante as requisições
     function setAuth(token) {
         headers.Authorization = `Bearer ${token}`
     }
 
     //FUNÇÃO PRIVADA QUE VAI EXECUTAR O REQUEST COM OS PARAMETROS PASSADOS
     async function requestApi(rota, options = {}) {
-        //Criação de um objeto que contam todas as options da consulta na fetch
+    /*Aqui é criado o objeto que contem as configurações da requisição inclusive o body quando existe 
+    o 'Spred Opretor* permite fazer a junção dos parametros fizxos e os recebidos por parametros 
+    tanto na instanciação da função e chamada do método */
         const optionsFetch = {
             headers: { ...headers, ...options.header },
             ...options,
@@ -22,7 +25,9 @@ function CreateFetch(headers = {}) {
         return response.json()
     }
 
-    function get(rota, options, filter) {
+    //Functions que intermediam as requisições a API
+
+    function get(rota, options) {
         return requestApi(rota, { ...options, method: 'GET' })
     }
 

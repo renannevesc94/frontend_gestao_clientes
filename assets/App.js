@@ -5,11 +5,13 @@ const Client = clients();
 const Modal = modal();
 
 const modalInfo = document.getElementById('modalInfo');
-const modalForm = document.getElementById('modal-form')
+const modalForm = document.getElementById('modal-form');
+const tabelaClientes = document.querySelector('#tabelaClientes');
+
 
 document.addEventListener('DOMContentLoaded', () => {
   listenBtnPages();
-  funcGetClients();
+  getAllClients();
   Modal.listenModal();
   Modal.listenCloseModal();
 
@@ -20,28 +22,24 @@ function listenBtnPages() {
   const btnPrevious = document.querySelector('#pagePreviou');
   const btnSearch = document.querySelector('.btnSearch');
 
-  btnSearch.addEventListener('click', () => funcGetClients(false, false,));
-  btnNext.addEventListener('click', () => funcGetClients(true, false,));
-  btnPrevious.addEventListener('click', () => funcGetClients(false, true));
+  btnSearch.addEventListener('click', () => getAllClients(false, false,));
+  btnNext.addEventListener('click', () => getAllClients(true, false,));
+  btnPrevious.addEventListener('click', () => getAllClients(false, true));
 }
 
-function updateStatus() {
-  const tabelaClientes = document.querySelector('.tabelaClientes');
-  tabelaClientes.addEventListener('click', callbackUpdateStatus);
-}
-
-function callbackUpdateStatus(event) {
+//Function que monitora o click nos botões da tabela e define a ação com base na classe do button
+function handleClientButtonClick(event) {
   if (event.target.classList.contains('btn-delete')) {
     const dataCnpj = event.target.dataset.cnpj;
-    deleteCliente(dataCnpj)
+    deleteClient(dataCnpj)
   }
   else if (event.target.classList.contains('btn-update')) {
     const dataSituacao = event.target.dataset.situacao
     const dataCnpj = event.target.dataset.cnpj
     if (dataSituacao === 'Liberado') {
-      bloquearCliente(dataCnpj, { status: 'Bloqueado' })
+      updateClientStatus(dataCnpj, { status: 'Bloqueado' })
     } else {
-      bloquearCliente(dataCnpj, { status: 'Liberado' })
+      updateClientStatus(dataCnpj, { status: 'Liberado' })
     }
   }
   else if (event.target.classList.contains('btn-edit')) {
@@ -50,30 +48,29 @@ function callbackUpdateStatus(event) {
   }
 };
 
-async function bloquearCliente(cnpj, bodyRequest) {
-  await Client.updateStatus(cnpj, bodyRequest)
-    .then(response => {
-      Modal.openModalInfo(modalInfo, response.message);
-      funcGetClients();
-    })
-    .catch(error => {
-      Modal.openModalInfo(modalInfo, error.message);
-    });
+async function updateClientStatus(cnpj, bodyRequest) {
+  try {
+    const response = await Client.updateStatus(cnpj, bodyRequest)
+    Modal.openModalInfo(modalInfo, response.message);
+    getAllClients();
+
+  } catch (error) {
+    Modal.openModalInfo(modalInfo, error.message);
+  }
 }
 
-async function deleteCliente(cnpj) {
-  Client.deleteCLient(cnpj)
-    .then(response => {
-      Modal.openModalInfo(modalInfo, response.message);
-      funcGetClients();
-    })
-    .catch(error => {
-      Modal.openModalInfo(modalInfo, error.message);
-      funcGetClients();
-    })
+async function deleteClient(cnpj) {
+  try {
+    const response = await Client.deleteCLient(cnpj)
+    Modal.openModalInfo(modalInfo, response.message);
+    getAllClients();
+  } catch (error) {
+    Modal.openModalInfo(modalInfo, error.message);
+  }
+
 }
 
-
+//Function para monitorar o radio button que filtra os clientes
 function cliFilter() {
   const filter = document.getElementsByName('filterCli');
   for (let i = 0; i < filter.length; i++) {
@@ -83,9 +80,14 @@ function cliFilter() {
   }
 }
 
-async function funcGetClients(next, previous) {
+/*Function para buscar todos os clientes, os parametros 'next' e 'previous' é para identificar se a função 
+foi chamada por um botão de next ou previous da página*/
+async function getAllClients(next, previous) {
+  //Constantes para pegar o conteúdo do input de pesquisa e o filtro adicional da pesquisa
   const contentPesquisa = document.querySelector('.inptPesquisa').value
   const filterCli = cliFilter();
+  /*Se nãõ houver nenhum filtro para busca é feita uma chamada para obter todos os clientes
+  com o resultado é montado uma tabela e acrescentado os botões de ação */
   if (contentPesquisa.trim() === '' && filterCli == '') {
     await Client.getAllClients(next, previous)
       .then(response => {
@@ -113,15 +115,17 @@ async function funcGetClients(next, previous) {
           `;
         });
         tabelaClientes.innerHTML = linhas;
-        updateStatus();
+        tabelaClientes.addEventListener('click', handleClientButtonClick);
       })
       .catch(error => {
         Modal.openModalInfo(modalInfo, error.message)
       })
   } else
+    /*Caso tenha algum filtro para pesquisa é chamado o método compatível com os critérios */
     findClients(contentPesquisa, next, previous, filterCli)
 
 }
+//funcção para buscar clientes aplicando os filtros selecionados
 async function findClients(contentPesquisa, next, previous, filterCli) {
   await Client.findClients(contentPesquisa, next, previous, filterCli)
     .then(response => {
@@ -149,17 +153,19 @@ async function findClients(contentPesquisa, next, previous, filterCli) {
       `;
       });
       tabelaClientes.innerHTML = linhas;
-      updateStatus();
+      tabelaClientes.addEventListener('click', handleClientButtonClick);
     })
     .catch(error => {
       Modal.openModalInfo(modalInfo, error.message)
     })
 }
 
+/*Edição do cliente, e load do modal com as informações, a função updateButtons() serve para
+atualizar a cor e nomeclatura e função dos botões do form, diferenciando a inclusãõ de edição*/
 async function editClient(filter) {
   try {
     const response = await Client.getCliByCnpj(filter);
-    const { alerta, cnpj, razao, telefone, contato, situacao} = response.cliente
+    const { alerta, cnpj, razao, telefone, contato, situacao } = response.cliente
     Modal.openModal(modalForm)
     document.querySelector('textarea[name="alerta"]').value = alerta;
     document.querySelector('input[name="cnpj"]').value = cnpj;
@@ -174,8 +180,9 @@ async function editClient(filter) {
   }
 }
 
-
-async function insetClient(){
+/*Cria um objeto FormData com o formulário , montando os pares de chave:valor com os campos do form
+ depois aciona o forEach para iterar sobre os objetos e montar o corpo do POST na API*/
+async function insetClient() {
   try {
     const formulario = document.querySelector('#formCadastro');
     const dadosFormulario = new FormData(formulario);
@@ -185,14 +192,15 @@ async function insetClient(){
     })
     const response = await Client.insertClient(bodyRequest)
     Modal.openModalInfo(modalInfo, response.message)
-    
+
   } catch (error) {
 
     Modal.openModalInfo(modalInfo, error)
   }
 }
 
-async function updateClient(){
+/*Mesma premissa da insetClient*/
+async function updateClient() {
   try {
     const formulario = document.querySelector('#formCadastro');
     const dadosFormulario = new FormData(formulario);
@@ -202,28 +210,30 @@ async function updateClient(){
     })
     const response = await Client.updateClient(bodyRequest)
     Modal.openModalInfo(modalInfo, response.message)
-    
+
   } catch (error) {
     Modal.openModalInfo(modalInfo, error.message)
   }
- 
+
 
 }
 
-const btnSubmit = document.querySelector('#btn-cadastrar')
-btnSubmit.addEventListener('click', async (event) => {
-  event.preventDefault();
-  const updateOrInsert = event.target.id;
-  if(updateOrInsert === 'btn-update'){
-    updateClient()
-  } else {
-    insetClient();
-  }
-})
+/*IIFE que adiciona uma escuta ao click no button para cadastrar cliente
+caso a o button esteja configurado para atualizar é chamada a função para atualizar
+isso é definido cpela ID do botão, que é manipulada pelo método updateButton */
+(function () {
+  const btnSubmit = document.querySelector('#btn-cadastrar')
+  btnSubmit.addEventListener('click', async (event) => {
+    event.preventDefault();
+    const updateOrInsert = event.target.id;
+    if (updateOrInsert === 'btn-update') {
+      updateClient()
+    } else {
+      insetClient();
+    }
+  })
+})();
 
-
-// Seleciona o elemento que contém a tabela de clientes
-const tabelaClientes = document.querySelector('#tabelaClientes');
 
 // Cria um novo observador
 const observer = new MutationObserver((mutations) => {
@@ -260,9 +270,10 @@ const config = {
 // Adiciona o observador ao elemento da tabela
 observer.observe(tabelaClientes, config);
 
-
-const btnClosePage = document.querySelector('#btnClosePage');
-btnClosePage.addEventListener('click', (event) => {
-  localStorage.clear();
-  window.location.href = "index.html"
-})
+(function () {
+  const btnClosePage = document.querySelector('#btnClosePage');
+  btnClosePage.addEventListener('click', (event) => {
+    localStorage.clear();
+    window.location.href = "index.html"
+  })
+})();
