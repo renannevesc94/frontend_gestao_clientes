@@ -1,5 +1,5 @@
 function CreateFetch(headers = {}) {
-    const baseRota = 'http://192.168.1.65:3000'//'https://api-gestao-clientes.onrender.com' //Aqui vem a URL padrão da API
+    const baseRota = 'https://api-gestao-clientes.onrender.com' //Aqui vem a URL padrão da API
     headers = {...headers,'Content-Type': 'application/json' }
 
     //Aqui é uma clousure para manter o token durante as requisições
