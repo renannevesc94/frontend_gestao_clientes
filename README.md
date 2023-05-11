@@ -1,4 +1,5 @@
-# Gestão de Licenças e Clientes
+# Gestão de Licenças e Clientes 
+<img src="https://img.shields.io/badge/VERSION-1.00-orange"> <img src="https://img.shields.io/badge/STATUS-EM%20DESENVOLVIMENTO-brightgreen"> <img src="https://img.shields.io/badge/RELEASE--DATE-MAY--23-orange"><br>
 Esta é uma solução que consome a **API-GESTAO-DE-CLIENTES** que pode ser encontrda na página inicial deste Github, a ideia desse projeto é praticar principalmente a manipulação de dados e comunicação com **API**
 
 # Tecnologias Utilizadas
